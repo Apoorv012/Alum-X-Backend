@@ -4,6 +4,7 @@ import com.opencode.alumxbackend.users.dto.UserProfileDTO;
 import com.opencode.alumxbackend.users.dto.UserRequest;
 import com.opencode.alumxbackend.users.model.User;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -47,8 +48,11 @@ public class UserController {
 
     @GetMapping("/{userId}/profile")
     public ResponseEntity<UserProfileDTO> getProfile(@PathVariable Long userId){
-        return userService.getUserProfile(userId)
-                .map(profile -> ResponseEntity.ok(profile))
-                .orElseGet(()->ResponseEntity.notFound().build());
+        try {
+            return ResponseEntity.ok(userService.getUserProfile(userId));
+        }
+        catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

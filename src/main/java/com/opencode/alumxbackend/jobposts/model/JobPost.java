@@ -3,7 +3,6 @@ package com.opencode.alumxbackend.jobposts.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,7 +28,7 @@ public class JobPost {
     private List<String> imageUrls;
 
     @OneToMany(mappedBy = "jobPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<JobPostComment> comments = new ArrayList<>();
+    private List<JobPostComment> comments;
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }

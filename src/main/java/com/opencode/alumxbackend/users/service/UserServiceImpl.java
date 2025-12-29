@@ -6,11 +6,14 @@ import com.opencode.alumxbackend.users.dto.UserRequest;
 import com.opencode.alumxbackend.users.model.User;
 import com.opencode.alumxbackend.users.model.UserRole;
 import com.opencode.alumxbackend.users.repository.UserRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +21,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
 
     @Override
     public User createUser(UserRequest request) {
@@ -45,7 +47,6 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Invalid email format: " + request.getEmail());
         }
 
-
         if (request.getPassword().length() < 6) {
             throw new BadRequestException("Password must be at least 6 characters");
         }
@@ -64,17 +65,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserProfileDTO> getUserProfile(Long id) {
-        return userRepository.findById(id)
-                .map(user -> new UserProfileDTO(
-                        user.getId(),
-                        user.getUsername(),
-                        user.getName(),
-                        user.getEmail(),
-                        user.getSkills(),
-                        user.getEducation(),
-                        user.getTechStack()
+    @Transactional
+    public UserProfileDTO getUserProfile(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-                ));
+        return mapToProfileDTO(user);
+
+        // return userRepository.findById(id)
+        // .map(user -> new UserProfileDTO(
+        // user.getId(),
+        // user.getUsername(),
+        // user.getName(),
+        // user.getEmail(),
+        // user.getSkills(),
+        // user.getEducation(),
+        // user.getTechStack()
+
+        // ));
     }
+
+    private UserProfileDTO mapToProfileDTO(User user) {
+        return UserProfileDTO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .name(user.getName())
+                .email(user.getEmail())
+                .skills(copy(user.getSkills()))
+                .education(copy(user.getEducation()))
+                .techStack(copy(user.getTechStack()))
+                .build();
+    }
+
+    private List<String> copy(List<String> list) {
+        return list == null ? List.of() : List.copyOf(list);
+    }
+
 }
