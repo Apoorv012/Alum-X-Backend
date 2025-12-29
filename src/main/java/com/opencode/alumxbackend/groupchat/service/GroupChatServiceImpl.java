@@ -54,7 +54,7 @@ public class GroupChatServiceImpl implements  GroupChatService {
 
 
     @Override
-    public List<GroupChat> getGroupsForUser(String userId) {
+    public List<GroupChat> getGroupsForUser(Long userId) {
         return repository.findGroupsByUserId(userId);
     }
 }

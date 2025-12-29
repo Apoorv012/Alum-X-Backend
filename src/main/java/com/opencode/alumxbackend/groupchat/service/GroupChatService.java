@@ -11,7 +11,7 @@ public interface GroupChatService {
 
     GroupChat getGroupById(Long groupId);
 
-    List<GroupChat> getGroupsForUser(String userId);
+    List<GroupChat> getGroupsForUser(Long userId);
 
 
 }

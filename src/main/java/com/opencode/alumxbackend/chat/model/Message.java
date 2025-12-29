@@ -1,4 +1,4 @@
-package com.opencode.alumxbackend.chat;
+package com.opencode.alumxbackend.chat.model;
 
 import java.time.LocalDateTime;
 
@@ -38,8 +38,6 @@ public class Message {
     private Long messageID;
 
 
-
-
     // we cant store the Entire object in the row this is the instace wer we
     // join the table
     //here it is going to match the primary key of the Chat table
@@ -72,6 +70,7 @@ public class Message {
         }
         return null;
     }
+    
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

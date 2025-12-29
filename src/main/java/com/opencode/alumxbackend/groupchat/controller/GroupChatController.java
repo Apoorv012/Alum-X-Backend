@@ -32,7 +32,7 @@ public class GroupChatController {
 
     // Get all groups for a user
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getGroupsForUser(@PathVariable String userId) {
+    public ResponseEntity<?> getGroupsForUser(@PathVariable Long userId) {
         var groups = service.getGroupsForUser(userId)
                 .stream()
                 .map(this::mapToResponse)
